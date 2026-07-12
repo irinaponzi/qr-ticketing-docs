@@ -8,7 +8,7 @@ La Ticket API gestiona eventos, compras y el ciclo de vida de las entradas.
 
 ## Autenticación
 
-Todos los endpoints requieren un JWT válido de AWS Cognito en el header `Authorization`:
+La mayoría de los endpoints requieren un JWT válido de AWS Cognito en el header `Authorization`:
 
 ```
 Authorization: Bearer <access_token_or_id_token>
@@ -18,6 +18,8 @@ Los tokens se validan contra el endpoint JWKS del User Pool de Cognito (`RS256`)
 
 | Endpoint | Rol requerido |
 |---|---|
+| `GET /events` | — (público) |
+| `GET /events/{id}` | — (público) |
 | `POST /events` | `admin` |
 | `POST /purchases` | `user` |
 | `POST /tickets/lookup` | cualquier usuario autenticado |
@@ -32,13 +34,73 @@ Los tokens se validan contra el endpoint JWKS del User Pool de Cognito (`RS256`)
 
 ## Resumen de endpoints
 
-| Método | Path | Descripción |
-|---|---|---|
-| `POST` | `/events` | Crear un nuevo evento |
-| `POST` | `/purchases` | Comprar entradas para un evento |
-| `POST` | `/tickets/lookup` | Obtener detalles de una entrada por código |
-| `POST` | `/tickets/cancel` | Cancelar una entrada |
-| `GET` | `/metrics` | Endpoint de métricas Prometheus |
+| Método | Path | Auth | Descripción |
+|---|---|---|---|
+| `GET` | `/events` | Ninguna | Listar todos los eventos |
+| `GET` | `/events/{id}` | Ninguna | Obtener evento por ID |
+| `POST` | `/events` | admin | Crear un nuevo evento |
+| `POST` | `/purchases` | user | Comprar entradas para un evento |
+| `POST` | `/tickets/lookup` | autenticado | Obtener detalles de una entrada por código |
+| `POST` | `/tickets/cancel` | admin | Cancelar una entrada |
+| `GET` | `/metrics` | Ninguna | Endpoint de métricas Prometheus |
+
+---
+
+## GET /events
+
+Retorna todos los eventos ordenados por fecha ascendente. No requiere autenticación.
+
+### Respuesta — 200 OK
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Rock Festival 2026",
+    "location": "Luna Park, Buenos Aires",
+    "date": "2026-07-15T20:00:00Z",
+    "capacity": 5000,
+    "available_tickets": 4850,
+    "ticket_price": 150.00
+  }
+]
+```
+
+Retorna un array vacío `[]` si no hay eventos.
+
+---
+
+## GET /events/{id}
+
+Retorna un único evento por su ID. No requiere autenticación.
+
+### Parámetros
+
+| Parámetro | En | Tipo | Descripción |
+|---|---|---|---|
+| `id` | path | `int` | ID del evento |
+
+### Respuesta — 200 OK
+
+```json
+{
+  "id": 1,
+  "name": "Rock Festival 2026",
+  "location": "Luna Park, Buenos Aires",
+  "date": "2026-07-15T20:00:00Z",
+  "capacity": 5000,
+  "available_tickets": 4850,
+  "ticket_price": 150.00
+}
+```
+
+### Errores
+
+| Estado | Motivo |
+|---|---|
+| `400` | ID de evento inválido (no entero) |
+| `404` | Evento no encontrado |
+| `500` | Error interno del servidor |
 
 ---
 
