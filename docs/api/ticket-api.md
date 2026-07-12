@@ -8,7 +8,7 @@ The Ticket API manages events, purchases, and ticket lifecycle operations.
 
 ## Authentication
 
-All endpoints require a valid AWS Cognito JWT in the `Authorization` header:
+Most endpoints require a valid AWS Cognito JWT in the `Authorization` header:
 
 ```
 Authorization: Bearer <access_token_or_id_token>
@@ -18,6 +18,8 @@ Tokens are validated against the Cognito User Pool JWKS endpoint (`RS256`). Role
 
 | Endpoint | Required role |
 |---|---|
+| `GET /events` | — (public) |
+| `GET /events/{id}` | — (public) |
 | `POST /events` | `admin` |
 | `POST /purchases` | `user` |
 | `POST /tickets/lookup` | any authenticated |
@@ -32,13 +34,73 @@ Tokens are validated against the Cognito User Pool JWKS endpoint (`RS256`). Role
 
 ## Endpoints Overview
 
-| Method | Path | Description |
-|---|---|---|
-| `POST` | `/events` | Create a new event |
-| `POST` | `/purchases` | Purchase tickets for an event |
-| `POST` | `/tickets/lookup` | Get ticket details by code |
-| `POST` | `/tickets/cancel` | Cancel a ticket |
-| `GET` | `/metrics` | Prometheus metrics endpoint |
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `GET` | `/events` | None | List all events |
+| `GET` | `/events/{id}` | None | Get event by ID |
+| `POST` | `/events` | admin | Create a new event |
+| `POST` | `/purchases` | user | Purchase tickets for an event |
+| `POST` | `/tickets/lookup` | authenticated | Get ticket details by code |
+| `POST` | `/tickets/cancel` | admin | Cancel a ticket |
+| `GET` | `/metrics` | None | Prometheus metrics endpoint |
+
+---
+
+## GET /events
+
+Returns all events ordered by date ascending. No authentication required.
+
+### Response — 200 OK
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Rock Festival 2026",
+    "location": "Luna Park, Buenos Aires",
+    "date": "2026-07-15T20:00:00Z",
+    "capacity": 5000,
+    "available_tickets": 4850,
+    "ticket_price": 150.00
+  }
+]
+```
+
+Returns an empty array `[]` if there are no events.
+
+---
+
+## GET /events/{id}
+
+Returns a single event by its ID. No authentication required.
+
+### Parameters
+
+| Parameter | In | Type | Description |
+|---|---|---|---|
+| `id` | path | `int` | Event ID |
+
+### Response — 200 OK
+
+```json
+{
+  "id": 1,
+  "name": "Rock Festival 2026",
+  "location": "Luna Park, Buenos Aires",
+  "date": "2026-07-15T20:00:00Z",
+  "capacity": 5000,
+  "available_tickets": 4850,
+  "ticket_price": 150.00
+}
+```
+
+### Errors
+
+| Status | Reason |
+|---|---|
+| `400` | Invalid (non-integer) event ID |
+| `404` | Event not found |
+| `500` | Internal server error |
 
 ---
 
