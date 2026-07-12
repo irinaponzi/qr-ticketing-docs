@@ -2,6 +2,44 @@ site_name: EntradasQR - Documentation
 site_description: Technical documentation for the EntradasQR ticket management platform
 site_author: EntradasQR Team
 
+plugins:
+  - search
+  - i18n:
+      docs_structure: suffix
+      languages:
+        - locale: en
+          default: true
+          name: English
+          build: true
+        - locale: es
+          name: Español
+          build: true
+          nav_translations:
+            Home: Inicio
+            Architecture: Arquitectura
+            Overview: Descripción general
+            Domain-Driven Design: Diseño guiado por dominio
+            Ports & Adapters: Puertos y Adaptadores
+            Domain Model: Modelo de dominio
+            Ticket Context: Contexto de Tickets
+            Validator Context: Contexto de Validación
+            Entity Diagrams: Diagramas de Entidades
+            API Reference: Referencia de API
+            Ticket API: API de Tickets
+            Validator API: API de Validación
+            Infrastructure: Infraestructura
+            RabbitMQ & Events: RabbitMQ y Eventos
+            Database Schema: Esquema de Base de Datos
+            Docker Services: Servicios Docker
+            Observability: Observabilidad
+            Metrics & Prometheus: Métricas y Prometheus
+            Logs & Loki: Logs y Loki
+            Grafana Dashboards: Dashboards de Grafana
+            Development: Desarrollo
+            Getting Started: Primeros Pasos
+            Testing Strategy: Estrategia de Testing
+            Linting & Code Quality: Linting y Calidad de Código
+
 theme:
   name: material
   language: en
