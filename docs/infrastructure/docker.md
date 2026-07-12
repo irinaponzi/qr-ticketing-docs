@@ -22,7 +22,6 @@ graph TB
         PR[Prometheus :9090]
         LK[Loki :3100]
         GF[Grafana :3000]
-        WIKI[MkDocs Wiki :8888]
     end
 
     TA --> DB1
@@ -60,12 +59,6 @@ graph TB
 | `loki` | `grafana/loki` | `3100` | Log aggregation |
 | `grafana` | `grafana/grafana` | `3000` | Dashboards & visualization |
 
-### Documentation
-
-| Service | Image | Port | Purpose |
-|---|---|---|---|
-| `wiki` | `squidfunk/mkdocs-material` | `8888` | Project documentation |
-
 ---
 
 ## Quick Reference
@@ -73,11 +66,7 @@ graph TB
 ### Start Everything
 
 ```bash
-# Infrastructure only
 make infra
-
-# With wiki
-docker compose --profile docs up -d
 ```
 
 ### Stop Everything
@@ -94,7 +83,6 @@ make infra-down
 | **MailHog Web UI** | [http://localhost:8025](http://localhost:8025) |
 | **Prometheus** | [http://localhost:9090](http://localhost:9090) |
 | **Grafana** | [http://localhost:3000](http://localhost:3000) (admin/admin) |
-| **Wiki** | [http://localhost:8888](http://localhost:8888) |
 
 ---
 
